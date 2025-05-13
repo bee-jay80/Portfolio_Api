@@ -1,7 +1,9 @@
 from django.db import models
+import os
+from django.conf import settings
 
 def project_type_choices():
-    return[
+    return [
         ("frontend", "Frontend"),
         ("backend", "Backend"),
         ("fullstack", "Fullstack"),
@@ -9,14 +11,6 @@ def project_type_choices():
         ("desktop", "Desktop"),
     ]
 
-
-class ProjectImage(models.Model):
-    id = models.AutoField(primary_key=True)
-    project = models.ForeignKey('Project', related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='projects/')
-
-    def __str__(self):
-        return f"Image for {self.project.title}"
 
 class Project(models.Model):
     id = models.AutoField(primary_key=True)
@@ -34,5 +28,25 @@ class Project(models.Model):
     github = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.title
+
+
+class ProjectImage(models.Model):
+    id = models.AutoField(primary_key=True)
+    project = models.ForeignKey('Project', related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='projects/')
+
+    def __str__(self):
+        return f"Image for {self.project.title}"
+
+    def delete(self, *args, **kwargs):
+        """
+        Override the delete method to remove the file from the media directory.
+        """
+        if self.image:
+            image_path = self.image.path
+            if os.path.exists(image_path):
+                os.remove(image_path)
+        super().delete(*args, **kwargs)

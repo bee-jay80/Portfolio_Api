@@ -4,7 +4,7 @@ from .models import Project, ProjectImage
 class ProjectImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImage
-        fields = ['id', 'image']
+        fields = ['id','project', 'image']
         read_only_fields = ['id']
 
 class ProjectSerializer(serializers.ModelSerializer):
