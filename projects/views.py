@@ -4,12 +4,13 @@ from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = PageNumberPagination  # Apply pagination here
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -41,7 +42,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ProjectImageViewSet(viewsets.ModelViewSet):
     queryset = ProjectImage.objects.all()
     serializer_class = ProjectImageSerializer
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -68,4 +68,3 @@ class ProjectImageViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
